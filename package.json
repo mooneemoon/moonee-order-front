@@ -1,0 +1,66 @@
+{
+  "name": "payment-demo",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@bucketplace/payment-bridge-react": "1.2.1",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.1",
+    "@types/node": "^16.11.36",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@types/react-router-dom": "^5.3.3",
+    "antd": "^4.21.4",
+    "axios": "^0.27.2",
+    "date-fns": "^2.29.1",
+    "query-string": "^7.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.31.2",
+    "react-json-view": "^1.21.3",
+    "react-query": "^3.39.0",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.6.4",
+    "web-vitals": "^2.1.4"
+  },
+  "engines": {
+    "node": "> 14.0.0"
+  },
+  "devDependencies": {
+    "@bucketplace/eslint-config-bucketplace": "^1.1.3",
+    "@craco/craco": "^6.4.5",
+    "@ohouse-payment/type": "*",
+    "@typescript-eslint/eslint-plugin": "^5.30.5",
+    "@typescript-eslint/parser": "^5.30.5",
+    "eslint": "^8.15.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-react-hooks": "^4.6.0"
+  },
+  "scripts": {
+    "dev": "export PORT=3001 && DISABLE_ESLINT_PLUGIN=true craco start ",
+    "start": "export PORT=3001 && craco start",
+    "build": "craco build",
+    "lint": "eslint .eslintrc.js",
+    "lint:fix": "eslint --fix --ext .ts,.tsx src/",
+    "tsc": "tsc"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

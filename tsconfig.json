@@ -1,0 +1,15 @@
+{
+  "extends": "../demo/tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "moduleResolution": "node",
+    "jsx": "preserve"
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
