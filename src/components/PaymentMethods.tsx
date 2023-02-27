@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { CheckboxOptionType, Form, FormInstance, Input, Radio } from 'antd';
-import { GetPaymentMethodParam } from '@ohouse-payment/type';
+import { GetPaymentMethodParam } from 'types/api';
 import styled from '@emotion/styled';
 import { getPaymentMethods } from '../api';
 import { PaymentForm } from '../types/form';

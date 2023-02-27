@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import queryString from 'query-string';
 import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
-import { ErrorResponse, PaymentMethodType, PostPaymentApprovalParam } from '@ohouse-payment/type';
+import { ErrorResponse, PaymentMethodType, PostPaymentApprovalParam } from 'types/api';
 
 import { approvePayment, issueVirtualAccount } from '../api';
 

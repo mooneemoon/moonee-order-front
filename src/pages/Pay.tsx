@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { PostRequestPaymentParam } from '@ohouse-payment/type';
+import { PostRequestPaymentParam } from 'types/api';
 import { usePaymentBridge } from '@bucketplace/payment-bridge-react';
 import { useMutation } from 'react-query';
 import { addMinutes, format } from 'date-fns';

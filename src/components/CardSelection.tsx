@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Form, FormInstance, Radio, Select } from 'antd';
 import styled from '@emotion/styled';
-import { PaymentMethodCard } from '@ohouse-payment/type';
+import { PaymentMethodCard } from 'types/api';
 import { PaymentForm } from '../types/form';
 
 interface CardSelectionProps {

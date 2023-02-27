@@ -1,4 +1,4 @@
-import { PostRequestPaymentParam } from '@ohouse-payment/type';
+import { PostRequestPaymentParam } from 'types/api';
 
 export type PaymentForm = Pick<
 PostRequestPaymentParam,
@@ -11,5 +11,5 @@ PostRequestPaymentParam,
 | 'cardCode'
 | 'installmentMonth'
 > & {
-  expiredAfter: number | null
+  expiredAfter: number | null,
 };

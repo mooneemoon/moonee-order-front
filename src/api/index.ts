@@ -15,7 +15,7 @@ import {
   PostRequestPaymentParam,
   PostRequestPaymentProcessResponse,
   PostVirtualAccountIssuance,
-} from '@ohouse-payment/type';
+} from 'types/api';
 import queryString from 'query-string';
 
 export function requestPayment(
