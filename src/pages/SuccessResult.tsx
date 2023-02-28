@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import ReactJson, { ReactJsonViewProps } from 'react-json-view';
-import { getPaymentApprovalResult } from '../api';
+import { getPaymentApprovalResult } from '../api/payment';
 
 const TypedReactJson = ReactJson as React.FC<ReactJsonViewProps>;
 

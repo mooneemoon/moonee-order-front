@@ -7,7 +7,7 @@ import { Form, Select, Input, Button, Card } from 'antd';
 
 import { PaymentForm } from 'types/form';
 import { PaymentMethods } from 'components/PaymentMethods';
-import { requestPayment } from 'api';
+import { requestPayment } from 'api/payment';
 
 /**
  * 서버에서 사용하는 날짜 포맷. UTC가 아닌 로컬시간으로 보내야 함.

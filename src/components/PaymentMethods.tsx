@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { CheckboxOptionType, Form, FormInstance, Input, Radio } from 'antd';
 import { GetPaymentMethodParam } from 'types/api';
 import styled from '@emotion/styled';
-import { getPaymentMethods } from '../api';
+import { getPaymentMethods } from '../api/payment';
 import { PaymentForm } from '../types/form';
 import { CardSelection } from './CardSelection';
 
