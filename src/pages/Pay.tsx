@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { PostRequestPaymentParam } from 'types/api';
 import { usePaymentBridge } from '@bucketplace/payment-bridge-react';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { addMinutes, format } from 'date-fns';
 import { Form, Select, Input, Button, Card } from 'antd';
 
@@ -9,6 +9,7 @@ import { PaymentForm } from 'types/form';
 import { PaymentMethods } from 'components/PaymentMethods';
 import { requestPayment } from 'api/payment';
 import { useLocation } from 'react-router-dom';
+import { getOrderSheet } from '../api/order';
 
 /**
  * 서버에서 사용하는 날짜 포맷. UTC가 아닌 로컬시간으로 보내야 함.
@@ -66,7 +67,11 @@ const MOCK_REQUEST_BODY: PostRequestPaymentParam = {
 export function Pay(): React.ReactElement {
   const location = useLocation();
   const orderId = location.pathname.split('/')[1];
-  console.log(location.pathname.split('/')[1]);
+
+  const { data, isLoading } = useQuery(
+    [],
+    () => getOrderSheet(orderId)
+  );
 
   const [form] = Form.useForm<PaymentForm>();
   const { doPaymentProcess, isProcessing } = usePaymentBridge({
@@ -99,6 +104,12 @@ export function Pay(): React.ReactElement {
   );
 
   const itemIds = useMemo(() => MOCK_REQUEST_BODY.items.map((item) => item.itemProductId), []);
+
+  if (!data || isLoading) {
+    return (<h3>잠시만 기다려주세요...</h3>);
+  }
+
+  console.log(data.data.data);
 
   const submit = (formData: PaymentForm): void => {
     const { expiredAfter, ...restForm } = formData;

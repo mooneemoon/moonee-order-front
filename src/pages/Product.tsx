@@ -1,4 +1,4 @@
-import { createOrderSheet, getProduct } from '../api/product';
+import { createOrderSheet, getProduct } from '../api/order';
 import { useMutation, useQuery } from 'react-query';
 import React from 'react';
 import { Form, Select, Button } from 'antd';

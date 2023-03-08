@@ -387,3 +387,63 @@ export interface PostCreateOrderSheetResponse {
 export interface PostCreateOrderSheetResultResponse {
   orderId : number;
 }
+
+export interface GetOrderSheetResponse {
+  data: GetOrderSheetResultResponse;
+}
+
+export interface GetOrderSheetResultResponse {
+  orderId: number;
+  productCost: number;
+  deliveryFee: number;
+  productList: GetOrderSheetProductResultResponse[];
+  user: GetOrderSheetUserResultResponse;
+  delivery: GetOrderSheetDeliveryResultResponse;
+}
+
+export interface GetOrderSheetProductResultResponse {
+  productName: string;
+  brandName: string;
+  deliveryFee: number;
+  thumbnailUrl: string;
+  optionList: GetOrderSheetProductOptionResultResponse[];
+  paymentMethods: GetOrderSheetPaymentMethodResultResponse[];
+}
+
+export interface GetOrderSheetProductOptionResultResponse {
+  optionName: string;
+  totalCost: number;
+  count: number;
+}
+
+export interface GetOrderSheetUserResultResponse {
+  userName: number;
+  phone: string;
+  email: string;
+}
+
+export interface GetOrderSheetDeliveryResultResponse {
+  recipientName: string;
+  recipientPhone: string;
+  address: string;
+  extraAddress: string;
+  postCode: string;
+  deliveryRequest: string;
+}
+
+export interface GetOrderSheetPaymentMethodResultResponse {
+  paymentMethodType: string;
+  paymentMethodName: string;
+  pgId: string;
+  isCashReceiptIssuable: boolean;
+  minAmount: number;
+  maxAmount:number;
+  card: GetOrderSheetPaymentMethodCardResultResponse[];
+}
+
+export interface GetOrderSheetPaymentMethodCardResultResponse {
+  cardName: string;
+  cardCode: string;
+  installmentMinAmount: number;
+  interestFreeMonths: number[];
+}
