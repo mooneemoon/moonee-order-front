@@ -368,3 +368,22 @@ export interface ProductOptionResponse {
   stock: number;
   cost:number;
 }
+
+export interface PostCreateOrderSheetParam {
+  productId: number;
+  productOptions: PostCreatedOrderSheetSelectedOptionParam[];
+}
+
+export interface PostCreatedOrderSheetSelectedOptionParam {
+  optionId: number;
+  count: number;
+}
+
+export interface PostCreateOrderSheetResponse {
+  result: string;
+  data : PostCreateOrderSheetResultResponse;
+}
+
+export interface PostCreateOrderSheetResultResponse {
+  orderId : number;
+}

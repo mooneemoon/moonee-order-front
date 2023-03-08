@@ -12,7 +12,7 @@ function App(): React.ReactElement {
     <div className="App">
       <Routes>
         <Route index element={<Product />} />
-        <Route path="" element={<Pay />} />
+        <Route path=":orderId/order" element={<Pay />} />
         <Route path=":orderId/:requestId/success" element={<Success />} />
         <Route path=":orderId/:requestId/success/result" element={<SuccessResult />} />
         <Route path=":orderId/:requestId/fail" element={<Fail />} />
