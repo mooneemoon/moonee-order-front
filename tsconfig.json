@@ -1,5 +1,5 @@
 {
-  "extends": "../demo/tsconfig.base.json",
+  "extends": "../moonee-order-front/tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": "src",
     "moduleResolution": "node",

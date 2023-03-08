@@ -1,4 +1,4 @@
-import { PostRequestPaymentParam } from 'types/api';
+import { PostCreateOrderSheetParam, PostRequestPaymentParam } from 'types/api';
 
 export type PaymentForm = Pick<
 PostRequestPaymentParam,
@@ -13,3 +13,9 @@ PostRequestPaymentParam,
 > & {
   expiredAfter: number | null,
 };
+
+export type ProductForm = Pick<
+PostCreateOrderSheetParam,
+| 'productId'
+| 'productOptions'
+>;

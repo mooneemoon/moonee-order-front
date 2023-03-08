@@ -338,3 +338,52 @@ export interface GetPaymentCancelResponse {
   cancelPaymentResponse: PostPaymentCancelResponse;
   errorResponse: ErrorResponse;
 }
+
+export interface GetProductParam {
+  productId: number;
+}
+
+export interface GetProductResponse {
+  data : ProductResponse;
+}
+
+export interface ProductResponse {
+  productId: number;
+  productName: string;
+  brandName: string;
+  cost: number;
+  deliveryFee: number;
+  thumbnailUrl: string;
+  optionList: ProductOptionListResponse;
+}
+
+export interface ProductOptionListResponse {
+  optionTitle: string;
+  options: ProductOptionResponse[];
+}
+
+export interface ProductOptionResponse {
+  optionId: number;
+  optionName: string;
+  stock: number;
+  cost:number;
+}
+
+export interface PostCreateOrderSheetParam {
+  productId: number;
+  productOptions: PostCreatedOrderSheetSelectedOptionParam[];
+}
+
+export interface PostCreatedOrderSheetSelectedOptionParam {
+  optionId: number;
+  count: number;
+}
+
+export interface PostCreateOrderSheetResponse {
+  result: string;
+  data : PostCreateOrderSheetResultResponse;
+}
+
+export interface PostCreateOrderSheetResultResponse {
+  orderId : number;
+}

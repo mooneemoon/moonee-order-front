@@ -5,7 +5,7 @@ import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
 import { ErrorResponse, PaymentMethodType, PostPaymentApprovalParam } from 'types/api';
 
-import { approvePayment, issueVirtualAccount } from '../api';
+import { approvePayment, issueVirtualAccount } from '../api/payment';
 
 type PaymentSuccessQueryString = Omit<PostPaymentApprovalParam, 'serviceId'> & {
   paymentMethodType?: PaymentMethodType,

@@ -7,7 +7,8 @@ import { Form, Select, Input, Button, Card } from 'antd';
 
 import { PaymentForm } from 'types/form';
 import { PaymentMethods } from 'components/PaymentMethods';
-import { requestPayment } from 'api';
+import { requestPayment } from 'api/payment';
+import { useLocation } from 'react-router-dom';
 
 /**
  * 서버에서 사용하는 날짜 포맷. UTC가 아닌 로컬시간으로 보내야 함.
@@ -63,6 +64,10 @@ const MOCK_REQUEST_BODY: PostRequestPaymentParam = {
 };
 
 export function Pay(): React.ReactElement {
+  const location = useLocation();
+  const orderId = location.pathname.split('/')[1];
+  console.log(location.pathname.split('/')[1]);
+
   const [form] = Form.useForm<PaymentForm>();
   const { doPaymentProcess, isProcessing } = usePaymentBridge({
     onFail: (payload) => {
