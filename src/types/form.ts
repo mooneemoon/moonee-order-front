@@ -1,18 +1,13 @@
-import { PostCreateOrderSheetParam, PostRequestPaymentParam } from 'types/api';
+import { PostCreateOrderSheetParam, PostRequestPaymentParam } from 'types/api2';
 
 export type PaymentForm = Pick<
 PostRequestPaymentParam,
-| 'userId'
-| 'requestId'
 | 'orderId'
-| 'userChannelType'
 | 'paymentMethodType'
 | 'paymentPgId'
 | 'cardCode'
 | 'installmentMonth'
-> & {
-  expiredAfter: number | null,
-};
+>;
 
 export type ProductForm = Pick<
 PostCreateOrderSheetParam,

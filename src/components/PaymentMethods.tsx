@@ -1,35 +1,23 @@
-import React, { useEffect, useMemo } from 'react';
-import { useQuery } from 'react-query';
+import React, { useEffect } from 'react';
 import { CheckboxOptionType, Form, FormInstance, Input, Radio } from 'antd';
-import { GetPaymentMethodParam } from 'types/api';
 import styled from '@emotion/styled';
-import { getPaymentMethods } from '../api/payment';
 import { PaymentForm } from '../types/form';
 import { CardSelection } from './CardSelection';
+import { GetOrderSheetPaymentMethodResultResponse } from '../types/api2';
 
 interface PaymentMethodsProps {
-  itemProductionIds: string[];
+  paymentMethods: GetOrderSheetPaymentMethodResultResponse[];
   form: FormInstance<PaymentForm>;
 }
 
 function PaymentMethodsImpl({
-  itemProductionIds,
+  paymentMethods,
   form,
 }: PaymentMethodsProps): React.ReactElement {
   const selectedMethodType = Form.useWatch('paymentMethodType', form);
 
-  const paymentMethodParam: GetPaymentMethodParam = {
-    itemProductIds: itemProductionIds,
-    serviceId: 'DEMO',
-  };
-
-  const { data, isLoading } = useQuery(
-    ['paymentMethod', paymentMethodParam],
-    () => getPaymentMethods(paymentMethodParam)
-  );
-
   useEffect(() => {
-    const selectedMethod = data?.data.paymentMethods.find((item) => item.paymentMethodType === selectedMethodType);
+    const selectedMethod = paymentMethods.find((item) => item.paymentMethodType === selectedMethodType);
     if (!selectedMethod) return;
 
     form.setFieldsValue({
@@ -37,13 +25,11 @@ function PaymentMethodsImpl({
       cardCode: undefined,
       installmentMonth: undefined,
     });
-  }, [selectedMethodType, data?.data.paymentMethods, form]);
+  }, [selectedMethodType, paymentMethods, form]);
 
-  const cardMethod = useMemo(() => data?.data.paymentMethods.find((item) => item.paymentMethodType === 'CARD'), [data?.data.paymentMethods]);
+  const cardMethod = paymentMethods.find((item) => item.paymentMethodType === 'CARD');
 
-  if (!data || isLoading) return <p>결제수단 불러오는 중</p>;
-
-  const radioOptions: CheckboxOptionType[] = data.data.paymentMethods.map((method) => ({
+  const radioOptions: CheckboxOptionType[] = paymentMethods.map((method) => ({
     label: method.paymentMethodName,
     value: method.paymentMethodType,
   }));

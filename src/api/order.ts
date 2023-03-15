@@ -4,8 +4,8 @@ import {
   GetOrderSheetResponse,
   GetProductParam,
   GetProductResponse, PostCreateOrderSheetParam,
-  PostCreateOrderSheetResponse,
-} from '../types/api';
+  PostCreateOrderSheetResponse, PostRequestPaymentParam, PostRequestPaymentProcessResponse,
+} from '../types/api2';
 
 export function getProduct({
   productId,
@@ -19,4 +19,13 @@ export function createOrderSheet(param: PostCreateOrderSheetParam): AxiosPromise
 
 export function getOrderSheet(orderId: string): AxiosPromise<GetOrderSheetResponse> {
   return orderClient.get<GetOrderSheetResponse>(`/orders/${orderId}/sheets`);
+}
+
+export function requestPayment(
+  param : PostRequestPaymentParam
+): AxiosPromise<PostRequestPaymentProcessResponse> {
+  return orderClient.post<PostRequestPaymentProcessResponse>(
+    `/orders/${param.orderId}/payments:request`,
+    param
+  );
 }

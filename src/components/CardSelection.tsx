@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { Form, FormInstance, Radio, Select } from 'antd';
 import styled from '@emotion/styled';
-import { PaymentMethodCard } from 'types/api';
 import { PaymentForm } from '../types/form';
+import { GetOrderSheetPaymentMethodCardResultResponse } from '../types/api2';
 
 interface CardSelectionProps {
-  cards: PaymentMethodCard[];
+  cards: GetOrderSheetPaymentMethodCardResultResponse[];
   form: FormInstance<PaymentForm>;
 }
 

@@ -8,7 +8,7 @@ import { SelectedOptionList } from '../components/SelectedOptionList';
 import {
   PostCreatedOrderSheetSelectedOptionParam,
   PostCreateOrderSheetParam,
-} from '../types/api';
+} from '../types/api2';
 import { useNavigate } from 'react-router-dom';
 
 export function Product(): React.ReactElement {
