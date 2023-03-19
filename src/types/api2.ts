@@ -1,6 +1,7 @@
 import {
   PaymentMethodType, PaymentProcessState,
 } from './api';
+import { PaymentFailType } from '@bucketplace/payment-bridge-core';
 
 export interface GetProductParam {
   productId: number;
@@ -138,8 +139,24 @@ export interface PostRequestPaymentParam {
   // promotionIds: string[];
 }
 
-export interface PostRequestPaymentProcessResponse {
+export interface PostRequestPaymentResponse {
+  data: PostRequestPaymentDataResponse;
+}
+
+export interface PostRequestPaymentDataResponse {
   paymentId: string;
   paymentProcessState: PaymentProcessState;
   paymentAuthUrl: string | null; // paymentProcessState = REQUEST인 경우만 전달
+  orderRequestId: number;
+}
+
+export interface PostRequestPaymentFailParam {
+  orderId: number;
+  paymentId: string;
+  paymentFailType: PaymentFailType;
+}
+
+export interface PostRequestPaymentFailResponse {
+  result: string;
+  error: string | null;
 }

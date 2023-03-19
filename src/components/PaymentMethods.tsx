@@ -11,7 +11,7 @@ interface PaymentMethodsProps {
 }
 
 function PaymentMethodsImpl({
-  paymentMethods,
+  paymentMethods = [],
   form,
 }: PaymentMethodsProps): React.ReactElement {
   const selectedMethodType = Form.useWatch('paymentMethodType', form);

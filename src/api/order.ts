@@ -3,8 +3,13 @@ import { AxiosPromise } from 'axios';
 import {
   GetOrderSheetResponse,
   GetProductParam,
-  GetProductResponse, PostCreateOrderSheetParam,
-  PostCreateOrderSheetResponse, PostRequestPaymentParam, PostRequestPaymentProcessResponse,
+  GetProductResponse,
+  PostCreateOrderSheetParam,
+  PostCreateOrderSheetResponse,
+  PostRequestPaymentFailParam,
+  PostRequestPaymentFailResponse,
+  PostRequestPaymentParam,
+  PostRequestPaymentResponse,
 } from '../types/api2';
 
 export function getProduct({
@@ -23,9 +28,18 @@ export function getOrderSheet(orderId: string): AxiosPromise<GetOrderSheetRespon
 
 export function requestPayment(
   param : PostRequestPaymentParam
-): AxiosPromise<PostRequestPaymentProcessResponse> {
-  return orderClient.post<PostRequestPaymentProcessResponse>(
+): AxiosPromise<PostRequestPaymentResponse> {
+  return orderClient.post<PostRequestPaymentResponse>(
     `/orders/${param.orderId}/payments:request`,
+    param
+  );
+}
+
+export function requestPaymentFail(
+  param : PostRequestPaymentFailParam
+): AxiosPromise<PostRequestPaymentFailResponse> {
+  return orderClient.post<PostRequestPaymentFailResponse>(
+    `/orders/${param.orderId}/payment-processes/${param.paymentId}:fail`,
     param
   );
 }

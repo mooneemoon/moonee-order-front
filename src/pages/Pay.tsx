@@ -6,7 +6,7 @@ import { Form, Button, Card, Input } from 'antd';
 
 import { PaymentForm } from 'types/form';
 import { PaymentMethods } from 'components/PaymentMethods';
-import { requestPayment } from 'api/order';
+import { requestPayment, requestPaymentFail } from 'api/order';
 import { useLocation } from 'react-router-dom';
 import { getOrderSheet } from '../api/order';
 
@@ -40,18 +40,24 @@ const MOCK_REQUEST_BODY: PostRequestPaymentParam = {
 export function Pay(): React.ReactElement {
   const location = useLocation();
   const orderId = location.pathname.split('/')[1];
-
-  const { data, isLoading } = useQuery(
-    [],
-    () => getOrderSheet(orderId)
-  );
-
   const [form] = Form.useForm<PaymentForm>();
+
   const { doPaymentProcess, isProcessing } = usePaymentBridge({
     onFail: (payload) => {
       if (payload.redirectUrl) {
-        // failRedirectUrl을 정의한 경우 값이 넘어옵니다.
-        window.location.href = payload.redirectUrl;
+        requestPaymentFail({
+          orderId: Number(orderId),
+          paymentId: payload.paymentId,
+          paymentFailType: payload.failType,
+        });
+
+        if (payload.failType === 'USER_CANCEL') {
+          alert('결제를 취소하였습니다.');
+        } else if (payload.failType === 'ERROR') {
+          alert('결제가 실패하였습니다.');
+        } else {
+          window.location.href = payload.redirectUrl;
+        }
       }
     },
     onSuccess: (payload) => {
@@ -66,8 +72,8 @@ export function Pay(): React.ReactElement {
   const { mutate } = useMutation(
     requestPayment,
     {
-      onSuccess: ({ data: { paymentAuthUrl } }) => {
-        console.log(data);
+      onSuccess: ({ data: { data: { paymentAuthUrl } } }) => {
+        console.log(paymentAuthUrl);
         if (!paymentAuthUrl) {
           alert('결제요청이 불가능한 상태입니다.');
           return;
@@ -77,11 +83,14 @@ export function Pay(): React.ReactElement {
     }
   );
 
+  const { data, isLoading } = useQuery(
+    [],
+    () => getOrderSheet(orderId)
+  );
+
   if (!data || isLoading) {
     return (<h3>잠시만 기다려주세요...</h3>);
   }
-
-  console.log(data.data);
 
   const submit = (formData: PaymentForm): void => {
     const { ...restForm } = formData;
@@ -126,7 +135,7 @@ export function Pay(): React.ReactElement {
         onFinish={submit}
       >
         <Form.Item rules={[{ required: true }]} label="주문 ID (orderId)" name="orderId" initialValue={data.data.data.orderId}>
-          <div>{ data.data.data.orderId }</div>
+          <Input disabled value={data.data.data.orderId} />
         </Form.Item>
         <Form.Item rules={[{ required: true }]} label="주문자 이름" name="userName" initialValue={data.data.data.user ? data.data.data.user.userName : ''}>
           <Input />

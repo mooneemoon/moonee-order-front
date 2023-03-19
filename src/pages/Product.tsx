@@ -25,8 +25,8 @@ export function Product(): React.ReactElement {
   const { mutate } = useMutation(
     createOrderSheet,
     {
-      onSuccess: ({ data: { data } }) => {
-        navigate('./' + data.orderId + '/order');
+      onSuccess: ({ data: { data: { orderId } } }) => {
+        navigate('./' + orderId + '/order');
       },
     }
   );
@@ -39,25 +39,25 @@ export function Product(): React.ReactElement {
     return (<h3>잠시만 기다려주세요...</h3>);
   }
   const handleSelectOption = (selectedOptionId : number) : void => {
-    const selectedOptions = form.getFieldValue('selectedOptions') ?? [];
-    const flag = selectedOptions.find((option : PostCreatedOrderSheetSelectedOptionParam) =>
+    const productOptions = form.getFieldValue('productOptions') ?? [];
+    const flag = productOptions.find((option : PostCreatedOrderSheetSelectedOptionParam) =>
       option.optionId === selectedOptionId) != null;
 
     if (flag) {
-      selectedOptions.forEach((option : PostCreatedOrderSheetSelectedOptionParam) => {
+      productOptions.forEach((option : PostCreatedOrderSheetSelectedOptionParam) => {
         if (option.optionId === selectedOptionId) {
           option.count = option.count + 1;
         }
       });
     } else {
-      selectedOptions.push({
+      productOptions.push({
         optionId: selectedOptionId,
         count: 1,
       });
     }
 
     form.setFieldsValue({
-      productOptions: selectedOptions,
+      productOptions: productOptions,
     });
   };
   const submit = (formData: ProductForm): void => {
@@ -73,7 +73,6 @@ export function Product(): React.ReactElement {
       { data && (
         <div>
           <img alt={data.data.data.thumbnailUrl} src={data.data.data.thumbnailUrl} width="300px" />
-          <div>{ data.data.data.productId }</div>
           <div>{ data.data.data.productName }</div>
           <div>{ data.data.data.brandName }</div>
           <div>{ `${data.data.data.cost}원` }</div>

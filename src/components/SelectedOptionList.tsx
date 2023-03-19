@@ -9,13 +9,13 @@ interface SelectedOptionProps {
 export function SelectedOptionList({
   form,
 }: SelectedOptionProps): React.ReactElement {
-  const selectedOptions = Form.useWatch('productOptions', form);
+  const productOptions = Form.useWatch('productOptions', form);
 
   return (
     <Form.Item name="productOptions">
       <div>
-        { selectedOptions != null && selectedOptions.map((item) => {
-          return <SelectedOption selectedOption={item} form={form} />;
+        { productOptions != null && productOptions.map((item) => {
+          return <SelectedOption key={item.optionId} selectedOption={item} form={form} />;
         }) }
       </div>
     </Form.Item>
