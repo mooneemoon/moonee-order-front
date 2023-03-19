@@ -149,7 +149,7 @@ export interface PaymentItem {
   taxType: TaxType;
 }
 
-export interface PostRequestPaymentBody {
+export interface PostRequestPaymentParam {
   serviceId: ServiceId;
   apiKey: string;
   orderTitle: string;
@@ -169,7 +169,7 @@ export interface PostRequestPaymentBody {
   items: PaymentItem[];
   couponIds: string[];
   promotionIds: string[];
-  payerName: string;
+  userName: string;
   payerEmail: string;
   payerPhoneNo: string;
   clientIp: string;
@@ -178,9 +178,6 @@ export interface PostRequestPaymentBody {
   requestAt: string;
   riskCategoryType: RiskCategoryType;
   incomeTaxDeductionType: IncomeTaxDeductionType;
-}
-
-export interface PostRequestPaymentParam extends PostRequestPaymentBody {
   orderId: string;
   requestId: string;
 }
@@ -337,53 +334,4 @@ export interface GetPaymentCancelResponse {
   cancelProcessStatus: CancelProcessState;
   cancelPaymentResponse: PostPaymentCancelResponse;
   errorResponse: ErrorResponse;
-}
-
-export interface GetProductParam {
-  productId: number;
-}
-
-export interface GetProductResponse {
-  data : ProductResponse;
-}
-
-export interface ProductResponse {
-  productId: number;
-  productName: string;
-  brandName: string;
-  cost: number;
-  deliveryFee: number;
-  thumbnailUrl: string;
-  optionList: ProductOptionListResponse;
-}
-
-export interface ProductOptionListResponse {
-  optionTitle: string;
-  options: ProductOptionResponse[];
-}
-
-export interface ProductOptionResponse {
-  optionId: number;
-  optionName: string;
-  stock: number;
-  cost:number;
-}
-
-export interface PostCreateOrderSheetParam {
-  productId: number;
-  productOptions: PostCreatedOrderSheetSelectedOptionParam[];
-}
-
-export interface PostCreatedOrderSheetSelectedOptionParam {
-  optionId: number;
-  count: number;
-}
-
-export interface PostCreateOrderSheetResponse {
-  result: string;
-  data : PostCreateOrderSheetResultResponse;
-}
-
-export interface PostCreateOrderSheetResultResponse {
-  orderId : number;
 }

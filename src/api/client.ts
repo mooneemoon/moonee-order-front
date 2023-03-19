@@ -7,7 +7,7 @@ export const client : AxiosInstance = axios.create({
   },
 });
 
-export const productClient : AxiosInstance = axios.create({
+export const orderClient : AxiosInstance = axios.create({
   baseURL: 'http://localhost:8080',
   headers: {
     withCredentials: true,

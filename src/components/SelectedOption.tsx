@@ -1,7 +1,7 @@
 import { Button, Form, FormInstance, Select } from 'antd';
 import { ProductForm } from '../types/form';
 import React from 'react';
-import { PostCreatedOrderSheetSelectedOptionParam } from '../types/api';
+import { PostCreatedOrderSheetSelectedOptionParam } from '../types/api2';
 
 interface SelectedOptionProps {
   selectedOption: PostCreatedOrderSheetSelectedOptionParam;
