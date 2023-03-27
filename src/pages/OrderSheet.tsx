@@ -149,12 +149,14 @@ export function OrderSheet(): React.ReactElement {
           { orderSheet.productList.map(product => {
             return (
               <ProductGroup>
-                <div>{ `${product.productName}  |  배송비 : ${product.deliveryFee}원 ` }</div>
+                <div>{ `${product.productName}  |  ${product.brandName} ` }</div>
+                <div>{ `배송비 : ${product.deliveryFee}원` }</div>
                 <div>
                   {
                     product.optionList.map(option => {
                       return (
                         <ProductOptionGroup>
+                          <img alt={product.thumbnailUrl} src={product.thumbnailUrl} width="50px" />
                           <div>{ option.optionName }</div>
                           <div>{ `${option.totalCost}원   |   ${option.count}개` }</div>
                         </ProductOptionGroup>
