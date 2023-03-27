@@ -18,7 +18,7 @@ export function Product(): React.ReactElement {
   const productId = 1;
 
   const { data, isLoading } = useQuery(
-    [],
+    ['product'],
     () => getProduct({ productId })
   );
 

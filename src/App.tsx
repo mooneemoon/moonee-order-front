@@ -3,9 +3,11 @@ import { Routes, Route } from 'react-router-dom';
 import { Product } from './pages/Product';
 import { Pay } from './pages/Pay';
 import { Success } from './pages/Success';
-import { Fail } from './pages/Fail';
-import './App.css';
 import { SuccessResult } from './pages/SuccessResult';
+import './App.css';
+import { Fail } from './pages/Fail';
+import { OrderDetail } from './pages/OrderDetail';
+import { Cancel } from './pages/Cancel';
 
 function App(): React.ReactElement {
   return (
@@ -13,9 +15,12 @@ function App(): React.ReactElement {
       <Routes>
         <Route index element={<Product />} />
         <Route path=":orderId/order" element={<Pay />} />
-        <Route path=":orderId/:requestId/success" element={<Success />} />
-        <Route path=":orderId/:requestId/success/result" element={<SuccessResult />} />
-        <Route path=":orderId/:requestId/fail" element={<Fail />} />
+        <Route path=":orderId/result" element={<Success />} />
+        <Route path=":orderId/result/success" element={<SuccessResult />} />
+        <Route path=":orderId/result/fail" element={<Fail />} />
+        <Route path=":orderId/detail" element={<OrderDetail />} />
+        <Route path=":orderId/cancel" element={<Cancel />} />
+        <Route path=":orderId/:orderProductOptionId/cancel" element={<Cancel />} />
       </Routes>
     </div>
   );

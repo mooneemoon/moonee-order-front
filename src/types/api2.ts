@@ -160,3 +160,66 @@ export interface PostRequestPaymentFailResponse {
   result: string;
   error: string | null;
 }
+
+export interface PostPaymentApprovalParam {
+  paymentId: string;
+  orderId: string;
+  requestId: string;
+  authenticationToken: string;
+}
+
+export interface PaymentApprovalResponse {
+  result: string;
+  error: string | null;
+}
+
+export interface GetOrderDetailParam {
+  orderId: number;
+}
+
+export interface GetOrderDetailResponse {
+  result: string;
+  error: string | null;
+  data: GetOrderResponse;
+}
+
+export interface GetOrderResponse {
+  orderId: number;
+  userId: number;
+  userName: string;
+  userPhone: string;
+  userEmail: string;
+  deliveryAddress: string;
+  deliveryExtraAddress: string;
+  postCode: string;
+  recipientName: string;
+  recipientPhone: string;
+  deliveryRequest: string | null;
+  paymentMethod:string;
+  paymentCost: number;
+  point: number;
+  promotionCost: number;
+  cardCode: string | null;
+  installmentMonth: number | null;
+  approvalAt: Date;
+  orderProductList: GetOrderProductResponse[];
+  state: string;
+  orderedAt: Date;
+}
+
+export interface GetOrderProductResponse {
+  orderProductId: number;
+  productId: number;
+  productName: string;
+  deliveryCost: number;
+  orderProductOptionList: GetOrderProductOptionResponse[];
+}
+
+export interface GetOrderProductOptionResponse {
+  orderProductOptionId: number;
+  optionId: number;
+  optionName: string;
+  count: number;
+  cost: number;
+  state: string;
+}

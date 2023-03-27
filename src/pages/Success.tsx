@@ -3,9 +3,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import queryString from 'query-string';
 import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
-import { ErrorResponse, PaymentMethodType, PostPaymentApprovalParam } from 'types/api';
+import { ErrorResponse, PaymentMethodType } from 'types/api';
 
-import { approvePayment, issueVirtualAccount } from '../api/payment';
+import { approvePayment } from '../api/order';
+import { PostPaymentApprovalParam } from '../types/api2';
 
 type PaymentSuccessQueryString = Omit<PostPaymentApprovalParam, 'serviceId'> & {
   paymentMethodType?: PaymentMethodType,
@@ -16,48 +17,30 @@ export function Success(): React.ReactElement {
   const navigate = useNavigate();
 
   const {
-    mutate: approveMutate,
-    isLoading: isApproveLoading,
-    isError: isApproveError,
-    error: approveError,
+    mutate,
+    isLoading,
+    isError,
+    error,
   } = useMutation(
     'payment/approve',
     approvePayment,
     {
-      onSuccess: () => {
-        navigate('./result');
+      onError: (payload) => {
+        console.log(payload);
+        navigate('./fail');
       },
-    }
-  );
-
-  const {
-    mutate: issueAccountMutate,
-    isLoading: isIssueAccountLoading,
-    isError: isIssueAccountError,
-    error: issueAccountError,
-  } = useMutation(
-    'payment/approve',
-    issueVirtualAccount,
-    {
-      onSuccess: () => {
-        navigate('./result');
+      onSuccess: (payload) => {
+        console.log(payload);
+        navigate('./success');
       },
     }
   );
 
   useEffect(() => {
-    const { paymentMethodType, ...param } = queryString.parse(searchParam.toString()) as PaymentSuccessQueryString;
-    if (paymentMethodType === 'VIRTUAL_ACCOUNT') {
-      issueAccountMutate({ ...param, serviceId: 'DEMO' });
-    } else {
-      approveMutate({ ...param, serviceId: 'DEMO' });
-    }
+    const { ...param } = queryString.parse(searchParam.toString()) as PaymentSuccessQueryString;
+    mutate(param);
 
-  }, [searchParam, issueAccountMutate, approveMutate]);
-
-  const isLoading = isApproveLoading || isIssueAccountLoading;
-  const isError = isApproveError || isIssueAccountError;
-  const error = approveError || issueAccountError;
+  }, [searchParam, mutate]);
 
   return (
     <>

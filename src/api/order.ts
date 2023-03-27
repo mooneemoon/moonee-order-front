@@ -10,6 +10,8 @@ import {
   PostRequestPaymentFailResponse,
   PostRequestPaymentParam,
   PostRequestPaymentResponse,
+  PostPaymentApprovalParam,
+  PaymentApprovalResponse, GetOrderDetailParam, GetOrderDetailResponse,
 } from '../types/api2';
 
 export function getProduct({
@@ -43,3 +45,19 @@ export function requestPaymentFail(
     param
   );
 }
+
+export function approvePayment(
+  param : PostPaymentApprovalParam
+): AxiosPromise<PaymentApprovalResponse> {
+  return orderClient.post<PaymentApprovalResponse>(
+    `/orders/${param.orderId}`,
+    param
+  );
+}
+
+export function getOrderDetail(
+  param : GetOrderDetailParam
+): AxiosPromise<GetOrderDetailResponse> {
+  return orderClient.get<GetOrderDetailResponse>(`/orders/${param.orderId}`);
+}
+

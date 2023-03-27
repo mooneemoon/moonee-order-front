@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { PostRequestPaymentParam } from 'types/api2';
 import { usePaymentBridge } from '@bucketplace/payment-bridge-react';
 import { useMutation, useQuery } from 'react-query';
@@ -7,8 +7,9 @@ import { Form, Button, Card, Input } from 'antd';
 import { PaymentForm } from 'types/form';
 import { PaymentMethods } from 'components/PaymentMethods';
 import { requestPayment, requestPaymentFail } from 'api/order';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getOrderSheet } from '../api/order';
+import ReactJson, { ReactJsonViewProps } from 'react-json-view';
 
 /**
  * 서버에서 사용하는 날짜 포맷. UTC가 아닌 로컬시간으로 보내야 함.
@@ -38,8 +39,7 @@ const MOCK_REQUEST_BODY: PostRequestPaymentParam = {
 };
 
 export function Pay(): React.ReactElement {
-  const location = useLocation();
-  const orderId = location.pathname.split('/')[1];
+  const { orderId } = useParams<{ orderId: string }>() as { orderId: string };
   const [form] = Form.useForm<PaymentForm>();
 
   const { doPaymentProcess, isProcessing } = usePaymentBridge({
@@ -84,9 +84,17 @@ export function Pay(): React.ReactElement {
   );
 
   const { data, isLoading } = useQuery(
-    [],
+    ['order/sheet'],
     () => getOrderSheet(orderId)
   );
+
+  useEffect(() => {
+    console.log(data);
+    // form.setFieldsValue({
+    //   orderId: data?.data.data.orderId || 1,
+    // });
+  }, [data, form]);
+
 
   if (!data || isLoading) {
     return (<h3>잠시만 기다려주세요...</h3>);
@@ -103,12 +111,14 @@ export function Pay(): React.ReactElement {
       pointAmount: 0,
       couponAmount: 0,
       promotionAmount: 0,
-      successRedirectUrl: `${window.location.origin}/${formData.orderId}/success`,
-      failRedirectUrl: `${window.location.origin}/${formData.orderId}/fail`,
+      successRedirectUrl: `${window.location.origin}/${formData.orderId}/result`,
+      failRedirectUrl: `${window.location.origin}/${formData.orderId}/result/fail`,
     };
 
     mutate(param);
   };
+
+  const TypedReactJson = ReactJson as React.FC<ReactJsonViewProps>;
 
   return (
     <Card title="결제 테스트">
@@ -135,7 +145,7 @@ export function Pay(): React.ReactElement {
         onFinish={submit}
       >
         <Form.Item rules={[{ required: true }]} label="주문 ID (orderId)" name="orderId" initialValue={data.data.data.orderId}>
-          <Input disabled value={data.data.data.orderId} />
+          <Input disabled />
         </Form.Item>
         <Form.Item rules={[{ required: true }]} label="주문자 이름" name="userName" initialValue={data.data.data.user ? data.data.data.user.userName : ''}>
           <Input />
@@ -168,9 +178,10 @@ export function Pay(): React.ReactElement {
           <PaymentMethods paymentMethods={data.data.data.paymentMethods} form={form} />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit">테스트</Button>
+          <Button type="primary" htmlType="submit">결제하기</Button>
         </Form.Item>
       </Form>
+      <TypedReactJson src={data.data.data.productList} />
       { isProcessing && <h1>결제 진행중!!!!!</h1> }
     </Card>
   );

@@ -6,6 +6,7 @@ module.exports = {
   ],
   rules: {
     'node/no-unpublished-import': 'off',
+    'indent': 'off',
   },
   ignorePatterns: [
     'craco.config.ts',
