@@ -9,7 +9,7 @@ import { PaymentMethods } from 'components/PaymentMethods';
 import { requestPayment, requestPaymentFail } from 'api/order';
 import { useParams } from 'react-router-dom';
 import { getOrderSheet } from '../api/order';
-import ReactJson, { ReactJsonViewProps } from 'react-json-view';
+import styled from '@emotion/styled';
 
 /**
  * 서버에서 사용하는 날짜 포맷. UTC가 아닌 로컬시간으로 보내야 함.
@@ -38,7 +38,7 @@ const MOCK_REQUEST_BODY: PostRequestPaymentParam = {
   failRedirectUrl: '',
 };
 
-export function Pay(): React.ReactElement {
+export function OrderSheet(): React.ReactElement {
   const { orderId } = useParams<{ orderId: string }>() as { orderId: string };
   const [form] = Form.useForm<PaymentForm>();
 
@@ -90,9 +90,6 @@ export function Pay(): React.ReactElement {
 
   useEffect(() => {
     console.log(data);
-    // form.setFieldsValue({
-    //   orderId: data?.data.data.orderId || 1,
-    // });
   }, [data, form]);
 
 
@@ -118,7 +115,7 @@ export function Pay(): React.ReactElement {
     mutate(param);
   };
 
-  const TypedReactJson = ReactJson as React.FC<ReactJsonViewProps>;
+  const orderSheet = data.data.data;
 
   return (
     <Card title="결제 테스트">
@@ -144,45 +141,103 @@ export function Pay(): React.ReactElement {
         validateTrigger={['onSubmit']}
         onFinish={submit}
       >
-        <Form.Item rules={[{ required: true }]} label="주문 ID (orderId)" name="orderId" initialValue={data.data.data.orderId}>
-          <Input disabled />
+        <Form.Item rules={[{ required: true }]} label="주문 ID (orderId)" name="orderId" initialValue={orderSheet.orderId}>
+          { orderSheet.orderId }
         </Form.Item>
-        <Form.Item rules={[{ required: true }]} label="주문자 이름" name="userName" initialValue={data.data.data.user ? data.data.data.user.userName : ''}>
-          <Input />
-        </Form.Item>
-        <Form.Item rules={[{ required: true }]} label="주문자 전화번호" name="phone" initialValue={data.data.data.user ? data.data.data.user.phone : ''}>
-          <Input />
-        </Form.Item>
-        <Form.Item rules={[{ required: true }]} label="주문자 이메일" name="email" initialValue={data.data.data.user ? data.data.data.user.email : ''}>
-          <Input />
-        </Form.Item>
-        <Form.Item rules={[{ required: true }]} label="수령인 이름" name="recipientName" initialValue={data.data.data.delivery ? data.data.data.delivery.recipientName : ''}>
-          <Input />
-        </Form.Item>
-        <Form.Item rules={[{ required: true }]} label="수령인 전화번호" name="recipientPhone" initialValue={data.data.data.delivery ? data.data.data.delivery.recipientPhone : ''}>
-          <Input />
-        </Form.Item>
-        <Form.Item rules={[{ required: true }]} label="배송지 주소 1" name="address" initialValue={data.data.data.delivery ? data.data.data.delivery.address : ''}>
-          <Input />
-        </Form.Item>
-        <Form.Item rules={[{ required: true }]} label="배송지 주소 2" name="extraAddress" initialValue={data.data.data.delivery ? data.data.data.delivery.extraAddress : ''}>
-          <Input />
-        </Form.Item>
-        <Form.Item rules={[{ required: true }]} label="배송지 우편 번호" name="postCode" initialValue={data.data.data.delivery ? data.data.data.delivery.postCode : ''}>
-          <Input />
-        </Form.Item>
-        <Form.Item rules={[{ required: true }]} label="배송 요청 사항" name="deliveryRequest" initialValue={data.data.data.delivery ? data.data.data.delivery.deliveryRequest : ''}>
-          <Input />
-        </Form.Item>
-        <Form.Item rules={[{ required: true }]} label="결제수단">
-          <PaymentMethods paymentMethods={data.data.data.paymentMethods} form={form} />
-        </Form.Item>
+        <OrderSheetItemGroup>
+          <OrderSheetItemTitle>주문 상품</OrderSheetItemTitle>
+          { orderSheet.productList.map(product => {
+            return (
+              <ProductGroup>
+                <div>{ `${product.productName}  |  배송비 : ${product.deliveryFee}원 ` }</div>
+                <div>
+                  {
+                    product.optionList.map(option => {
+                      return (
+                        <ProductOptionGroup>
+                          <div>{ option.optionName }</div>
+                          <div>{ `${option.totalCost}원   |   ${option.count}개` }</div>
+                        </ProductOptionGroup>
+                      );
+                    })
+                  }
+                </div>
+              </ProductGroup>
+            );
+          }) }
+        </OrderSheetItemGroup>
+        <OrderSheetItemGroup>
+          <OrderSheetItemTitle>주문자 정보</OrderSheetItemTitle>
+          <Form.Item rules={[{ required: true }]} label="주문자 이름" name="userName" initialValue={orderSheet.user ? orderSheet.user.userName : ''}>
+            <Input />
+          </Form.Item>
+          <Form.Item rules={[{ required: true }]} label="주문자 전화번호" name="phone" initialValue={orderSheet.user ? orderSheet.user.phone : ''}>
+            <Input />
+          </Form.Item>
+          <Form.Item rules={[{ required: true }]} label="주문자 이메일" name="email" initialValue={orderSheet.user ? orderSheet.user.email : ''}>
+            <Input />
+          </Form.Item>
+        </OrderSheetItemGroup>
+        <OrderSheetItemGroup>
+          <OrderSheetItemTitle>배송지 정보</OrderSheetItemTitle>
+          <Form.Item rules={[{ required: true }]} label="수령인 이름" name="recipientName" initialValue={orderSheet.delivery ? orderSheet.delivery.recipientName : ''}>
+            <Input />
+          </Form.Item>
+          <Form.Item rules={[{ required: true }]} label="수령인 전화번호" name="recipientPhone" initialValue={orderSheet.delivery ? orderSheet.delivery.recipientPhone : ''}>
+            <Input />
+          </Form.Item>
+          <Form.Item rules={[{ required: true }]} label="배송지 주소 1" name="address" initialValue={orderSheet.delivery ? orderSheet.delivery.address : ''}>
+            <Input />
+          </Form.Item>
+          <Form.Item rules={[{ required: true }]} label="배송지 주소 2" name="extraAddress" initialValue={orderSheet.delivery ? orderSheet.delivery.extraAddress : ''}>
+            <Input />
+          </Form.Item>
+          <Form.Item rules={[{ required: true }]} label="배송지 우편 번호" name="postCode" initialValue={orderSheet.delivery ? orderSheet.delivery.postCode : ''}>
+            <Input />
+          </Form.Item>
+          <Form.Item rules={[{ required: true }]} label="배송 요청 사항" name="deliveryRequest" initialValue={orderSheet.delivery ? orderSheet.delivery.deliveryRequest : ''}>
+            <Input />
+          </Form.Item>
+        </OrderSheetItemGroup>
+        <OrderSheetItemGroup>
+          <OrderSheetItemTitle>결제 정보</OrderSheetItemTitle>
+          <Form.Item rules={[{ required: true }]} label="결제수단">
+            <PaymentMethods paymentMethods={orderSheet.paymentMethods} form={form} />
+          </Form.Item>
+        </OrderSheetItemGroup>
         <Form.Item>
           <Button type="primary" htmlType="submit">결제하기</Button>
         </Form.Item>
       </Form>
-      <TypedReactJson src={data.data.data.productList} />
       { isProcessing && <h1>결제 진행중!!!!!</h1> }
     </Card>
   );
 }
+
+const ProductGroup = styled.div`
+  width: 500px;
+  color: gray;
+  border-top: thin solid gray;
+  border-bottom: thin solid gray;
+  padding: 10px
+`;
+
+const ProductOptionGroup = styled.div`
+  width: 450px;
+  border: thin solid gray;
+  padding: 5px;
+  margin-top: 5px;
+`;
+
+const OrderSheetItemGroup = styled.div`
+  width : 600px;
+  border: thin solid gray;
+  margin: 5px;
+  padding: 5px;
+`;
+
+const OrderSheetItemTitle = styled.div`
+  border-bottom: thin solid gray;
+  font-weight: bold;
+  font-size: 15px;
+`;

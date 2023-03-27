@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Product } from './pages/Product';
-import { Pay } from './pages/Pay';
+import { OrderSheet } from './pages/OrderSheet';
 import { Success } from './pages/Success';
 import { SuccessResult } from './pages/SuccessResult';
 import './App.css';
@@ -14,7 +14,7 @@ function App(): React.ReactElement {
     <div className="App">
       <Routes>
         <Route index element={<Product />} />
-        <Route path=":orderId/order" element={<Pay />} />
+        <Route path=":orderId/order" element={<OrderSheet />} />
         <Route path=":orderId/result" element={<Success />} />
         <Route path=":orderId/result/success" element={<SuccessResult />} />
         <Route path=":orderId/result/fail" element={<Fail />} />
