@@ -223,3 +223,14 @@ export interface GetOrderProductOptionResponse {
   cost: number;
   state: string;
 }
+
+export interface PostCancelOrderParam {
+  orderId: number;
+  orderProductOptionId: number | null;
+  reason: string;
+}
+
+export interface PostCancelOrderResponse {
+  result: string;
+  error: string | null;
+}

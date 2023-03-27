@@ -11,7 +11,7 @@ import {
   PostRequestPaymentParam,
   PostRequestPaymentResponse,
   PostPaymentApprovalParam,
-  PaymentApprovalResponse, GetOrderDetailParam, GetOrderDetailResponse,
+  PaymentApprovalResponse, GetOrderDetailParam, GetOrderDetailResponse, PostCancelOrderParam, PostCancelOrderResponse,
 } from '../types/api2';
 
 export function getProduct({
@@ -61,3 +61,12 @@ export function getOrderDetail(
   return orderClient.get<GetOrderDetailResponse>(`/orders/${param.orderId}`);
 }
 
+export function cancelOrder(
+  param: PostCancelOrderParam
+): AxiosPromise<PostCancelOrderResponse> {
+  const url = param.orderProductOptionId ?
+    `/orders/${param.orderId}/${param.orderProductOptionId}/cancel`
+    : `/orders/${param.orderId}/cancel`;
+  console.log(url);
+  return orderClient.post<PostCancelOrderResponse>(url, param);
+}
