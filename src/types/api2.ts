@@ -59,6 +59,7 @@ export interface GetOrderSheetResponse {
 export interface GetOrderSheetResultResponse {
   orderId: number;
   orderAmount: number;
+  productCost: number;
   deliveryFee: number;
   productList: GetOrderSheetProductResultResponse[];
   user: GetOrderSheetUserResultResponse;

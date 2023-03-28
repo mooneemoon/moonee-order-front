@@ -52,6 +52,12 @@ export interface ErrorResponse {
   code: string;
   message: string;
   detailMessage: string;
+  error: ErrorData;
+}
+
+export interface ErrorData {
+  code: string;
+  message: string;
 }
 
 export interface VirtualAccount {

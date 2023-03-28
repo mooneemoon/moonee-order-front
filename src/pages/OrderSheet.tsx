@@ -7,7 +7,7 @@ import { Form, Button, Card, Input } from 'antd';
 import { PaymentForm } from 'types/form';
 import { PaymentMethods } from 'components/PaymentMethods';
 import { requestPayment, requestPaymentFail } from 'api/order';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getOrderSheet } from '../api/order';
 import styled from '@emotion/styled';
 
@@ -41,6 +41,7 @@ const MOCK_REQUEST_BODY: PostRequestPaymentParam = {
 export function OrderSheet(): React.ReactElement {
   const { orderId } = useParams<{ orderId: string }>() as { orderId: string };
   const [form] = Form.useForm<PaymentForm>();
+  const navigate = useNavigate();
 
   const { doPaymentProcess, isProcessing } = usePaymentBridge({
     onFail: (payload) => {
@@ -53,10 +54,10 @@ export function OrderSheet(): React.ReactElement {
 
         if (payload.failType === 'USER_CANCEL') {
           alert('결제를 취소하였습니다.');
-        } else if (payload.failType === 'ERROR') {
-          alert('결제가 실패하였습니다.');
         } else {
-          window.location.href = payload.redirectUrl;
+          // window.location.href = payload.redirectUrl;
+          console.log(payload);
+          alert(`결제가 실패하였습니다. \n${payload.failMessage}`);
         }
       }
     },
@@ -85,7 +86,16 @@ export function OrderSheet(): React.ReactElement {
 
   const { data, isLoading } = useQuery(
     ['order/sheet'],
-    () => getOrderSheet(orderId)
+    () => getOrderSheet(orderId),
+    {
+      onSuccess: () => {
+        console.log('success');
+      },onError: ({ response }) => {
+        const error = response.data.error;
+        alert(error.message);
+        navigate('../');
+      },
+    }
   );
 
   useEffect(() => {
@@ -103,14 +113,13 @@ export function OrderSheet(): React.ReactElement {
     const param = {
       ...MOCK_REQUEST_BODY,
       ...restForm,
-      orderAmount: data.data.data.orderAmount + data.data.data.deliveryFee,
-      paymentAmount: data.data.data.orderAmount + data.data.data.deliveryFee,
-      pointAmount: 0,
-      couponAmount: 0,
-      promotionAmount: 0,
+      // orderAmount: data.data.data.orderAmount + data.data.data.deliveryFee,
+      // paymentAmount: data.data.data.orderAmount + data.data.data.deliveryFee,
       successRedirectUrl: `${window.location.origin}/${formData.orderId}/result`,
       failRedirectUrl: `${window.location.origin}/${formData.orderId}/result/fail`,
     };
+
+    console.log(param);
 
     mutate(param);
   };
@@ -125,7 +134,7 @@ export function OrderSheet(): React.ReactElement {
           span: 5,
         }}
         wrapperCol={{
-          span: 10,
+          span: 15,
         }}
         validateMessages={{
           /* eslint-disable no-template-curly-in-string */
@@ -133,7 +142,6 @@ export function OrderSheet(): React.ReactElement {
         }}
         layout="horizontal"
         initialValues={{
-          orderAmount: 100000,
           userChannelType: 'OHOUSE_GUEST',
           paymentMethodType: 'CARD',
         }}
@@ -149,15 +157,14 @@ export function OrderSheet(): React.ReactElement {
           { orderSheet.productList.map(product => {
             return (
               <ProductGroup>
-                <div>{ `${product.productName}  |  ${product.brandName} ` }</div>
-                <div>{ `배송비 : ${product.deliveryFee}원` }</div>
+                <div>{ `${product.brandName}  |  배송비 : ${product.deliveryFee}원 ` }</div>
                 <div>
                   {
                     product.optionList.map(option => {
                       return (
                         <ProductOptionGroup>
                           <img alt={product.thumbnailUrl} src={product.thumbnailUrl} width="50px" />
-                          <div>{ option.optionName }</div>
+                          <div>{ `${product.productName} | ${option.optionName}` }</div>
                           <div>{ `${option.totalCost}원   |   ${option.count}개` }</div>
                         </ProductOptionGroup>
                       );
@@ -202,10 +209,22 @@ export function OrderSheet(): React.ReactElement {
           </Form.Item>
         </OrderSheetItemGroup>
         <OrderSheetItemGroup>
-          <OrderSheetItemTitle>결제 정보</OrderSheetItemTitle>
+          <OrderSheetItemTitle>결제 수단</OrderSheetItemTitle>
           <Form.Item rules={[{ required: true }]} label="결제수단">
             <PaymentMethods paymentMethods={orderSheet.paymentMethods} form={form} />
           </Form.Item>
+        </OrderSheetItemGroup>
+        <OrderSheetItemGroup>
+          <OrderSheetItemTitle>결제 금액</OrderSheetItemTitle>
+          <Form.Item rules={[{ required: true }]} label="주문 금액" name="orderAmount" initialValue={orderSheet.orderAmount}>{ `${orderSheet.orderAmount}원` }</Form.Item>
+          <Form.Item label="상품 금액">{ `${orderSheet.productCost}원` }</Form.Item>
+          <Form.Item label="배송비">{ `${orderSheet.deliveryFee}원` }</Form.Item>
+          <Form.Item rules={[{ required: true }]} label="포인트 사용" name="pointAmount" initialValue={0}>(-) 0원</Form.Item>
+          <Form.Item rules={[{ required: true }]} label="쿠폰 사용" name="couponAmount" initialValue={0}>(-) 0원</Form.Item>
+          <Form.Item rules={[{ required: true }]} label="할인 금액" name="promotionAmount" initialValue={0}>(-) 0원</Form.Item>
+          <PaymentAmountBox>
+            <Form.Item rules={[{ required: true }]} label="결제 금액" name="paymentAmount" initialValue={orderSheet.orderAmount}>{ `${orderSheet.orderAmount}원` }</Form.Item>
+          </PaymentAmountBox>
         </OrderSheetItemGroup>
         <Form.Item>
           <Button type="primary" htmlType="submit">결제하기</Button>
@@ -219,9 +238,11 @@ export function OrderSheet(): React.ReactElement {
 const ProductGroup = styled.div`
   width: 500px;
   color: gray;
-  border-top: thin solid gray;
   border-bottom: thin solid gray;
-  padding: 10px
+  padding: 10px;
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 const ProductOptionGroup = styled.div`
@@ -242,4 +263,10 @@ const OrderSheetItemTitle = styled.div`
   border-bottom: thin solid gray;
   font-weight: bold;
   font-size: 15px;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
 `;
+
+const PaymentAmountBox = styled.div`
+  border: thin solid gray;
+    `;

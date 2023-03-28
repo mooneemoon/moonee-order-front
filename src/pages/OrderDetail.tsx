@@ -109,7 +109,10 @@ const ProductGroup = styled.div`
   color: gray;
   border-top: thin solid gray;
   border-bottom: thin solid gray;
-  padding: 10px
+  padding: 10px;
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 const ProductOptionGroup = styled.div`
