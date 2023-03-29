@@ -10,7 +10,14 @@ import {
   PostRequestPaymentFailResponse,
   PostRequestPaymentParam,
   PostRequestPaymentResponse,
-} from '../types/api2';
+  PostPaymentApprovalParam,
+  PaymentApprovalResponse,
+  GetOrderDetailParam,
+  GetOrderDetailResponse,
+  PostCancelOrderParam,
+  PostCancelOrderResponse,
+  GetOrderListParam, GetOrderListResponse,
+} from '../types/api';
 
 export function getProduct({
   productId,
@@ -42,4 +49,44 @@ export function requestPaymentFail(
     `/orders/${param.orderId}/payment-processes/${param.paymentId}:fail`,
     param
   );
+}
+
+export function approvePayment(
+  param : PostPaymentApprovalParam
+): AxiosPromise<PaymentApprovalResponse> {
+  return orderClient.post<PaymentApprovalResponse>(
+    `/orders/${param.orderId}`,
+    param
+  );
+}
+
+export function getOrderList({
+  filter, page, size,
+} : GetOrderListParam): AxiosPromise<GetOrderListResponse> {
+  return orderClient.get<GetOrderListResponse>(
+    '/orders',
+    {
+      params: {
+        filter: filter,
+        page: page,
+        size: size,
+      },
+    }
+  );
+}
+
+export function getOrderDetail(
+  param : GetOrderDetailParam
+): AxiosPromise<GetOrderDetailResponse> {
+  return orderClient.get<GetOrderDetailResponse>(`/orders/${param.orderId}`);
+}
+
+export function cancelOrder(
+  param: PostCancelOrderParam
+): AxiosPromise<PostCancelOrderResponse> {
+  const url = param.orderProductOptionId ?
+    `/orders/${param.orderId}/${param.orderProductOptionId}/cancel`
+    : `/orders/${param.orderId}/cancel`;
+  console.log(url);
+  return orderClient.post<PostCancelOrderResponse>(url, param);
 }

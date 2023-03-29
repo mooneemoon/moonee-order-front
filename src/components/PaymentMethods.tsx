@@ -3,7 +3,7 @@ import { CheckboxOptionType, Form, FormInstance, Input, Radio } from 'antd';
 import styled from '@emotion/styled';
 import { PaymentForm } from '../types/form';
 import { CardSelection } from './CardSelection';
-import { GetOrderSheetPaymentMethodResultResponse } from '../types/api2';
+import { GetOrderSheetPaymentMethodResultResponse } from '../types/api';
 
 interface PaymentMethodsProps {
   paymentMethods: GetOrderSheetPaymentMethodResultResponse[];
@@ -14,10 +14,10 @@ function PaymentMethodsImpl({
   paymentMethods = [],
   form,
 }: PaymentMethodsProps): React.ReactElement {
-  const selectedMethodType = Form.useWatch('paymentMethodType', form);
+  const selectedMethodType = Form.useWatch('paymentMethod', form);
 
   useEffect(() => {
-    const selectedMethod = paymentMethods.find((item) => item.paymentMethodType === selectedMethodType);
+    const selectedMethod = paymentMethods.find((item) => item.paymentMethod === selectedMethodType);
     if (!selectedMethod) return;
 
     form.setFieldsValue({
@@ -27,16 +27,16 @@ function PaymentMethodsImpl({
     });
   }, [selectedMethodType, paymentMethods, form]);
 
-  const cardMethod = paymentMethods.find((item) => item.paymentMethodType === 'CARD');
+  const cardMethod = paymentMethods.find((item) => item.paymentMethod === 'CARD');
 
   const radioOptions: CheckboxOptionType[] = paymentMethods.map((method) => ({
     label: method.paymentMethodName,
-    value: method.paymentMethodType,
+    value: method.paymentMethod,
   }));
 
   return (
     <>
-      <Form.Item rules={[{ required: true }]} name="paymentMethodType">
+      <Form.Item rules={[{ required: true }]} name="paymentMethod">
         <StyledRadioGroup
           buttonStyle="solid"
           optionType="button"

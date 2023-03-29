@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Form, FormInstance, Radio, Select } from 'antd';
 import styled from '@emotion/styled';
 import { PaymentForm } from '../types/form';
-import { GetOrderSheetPaymentMethodCardResultResponse } from '../types/api2';
+import { GetOrderSheetPaymentMethodCardResultResponse } from '../types/api';
 
 interface CardSelectionProps {
   cards: GetOrderSheetPaymentMethodCardResultResponse[];

@@ -1,7 +1,7 @@
 import { Button, Form, FormInstance, Select } from 'antd';
 import { ProductForm } from '../types/form';
 import React from 'react';
-import { PostCreatedOrderSheetSelectedOptionParam } from '../types/api2';
+import { PostCreatedOrderSheetSelectedOptionParam } from '../types/api';
 
 interface SelectedOptionProps {
   selectedOption: PostCreatedOrderSheetSelectedOptionParam;
@@ -11,7 +11,7 @@ export function SelectedOption({
   selectedOption,
   form,
 }: SelectedOptionProps): React.ReactElement {
-  const selectedOptions = Form.useWatch('productOptions', form);
+  const selectedOptions = Form.useWatch('productOptionList', form);
   const handleSelectedOptionCount = (optionCount: number) :void => {
     selectedOptions.forEach((option : PostCreatedOrderSheetSelectedOptionParam) => {
       if (selectedOption.optionId === option.optionId) {
@@ -20,7 +20,7 @@ export function SelectedOption({
       }
     });
     form.setFieldsValue({
-      productOptions: selectedOptions,
+      productOptionList: selectedOptions,
     });
     selectedOption.count = optionCount;
   };
@@ -29,7 +29,7 @@ export function SelectedOption({
     const index = selectedOptions.indexOf(selectedOption);
     selectedOptions.splice(index, 1);
     form.setFieldsValue({
-      productOptions: selectedOptions,
+      productOptionList: selectedOptions,
     });
   };
 

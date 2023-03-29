@@ -1,63 +1,45 @@
 import React, { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import queryString from 'query-string';
 import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
-import { ErrorResponse, PaymentMethodType, PostPaymentApprovalParam } from 'types/api';
+import { ErrorResponse, PaymentMethodType } from 'types/api';
 
-import { approvePayment, issueVirtualAccount } from '../api/payment';
+import { approvePayment } from '../api/order';
+import { PostPaymentApprovalParam } from '../types/api';
+import { Button } from 'antd';
 
 type PaymentSuccessQueryString = Omit<PostPaymentApprovalParam, 'serviceId'> & {
-  paymentMethodType?: PaymentMethodType,
+  paymentMethod?: PaymentMethodType,
 };
 
 export function Success(): React.ReactElement {
+  const { orderId } = useParams<{ orderId: string }>() as { orderId: string };
   const [searchParam] = useSearchParams();
   const navigate = useNavigate();
 
   const {
-    mutate: approveMutate,
-    isLoading: isApproveLoading,
-    isError: isApproveError,
-    error: approveError,
+    mutate,
+    isLoading,
+    isError,
+    error,
   } = useMutation(
     'payment/approve',
     approvePayment,
     {
-      onSuccess: () => {
-        navigate('./result');
+      onSuccess: (payload) => {
+        console.log(payload);
+        navigate('./success');
       },
     }
   );
 
-  const {
-    mutate: issueAccountMutate,
-    isLoading: isIssueAccountLoading,
-    isError: isIssueAccountError,
-    error: issueAccountError,
-  } = useMutation(
-    'payment/approve',
-    issueVirtualAccount,
-    {
-      onSuccess: () => {
-        navigate('./result');
-      },
-    }
-  );
+  const errorData = isError && error ? (error as AxiosError<ErrorResponse>).response?.data : null;
 
   useEffect(() => {
-    const { paymentMethodType, ...param } = queryString.parse(searchParam.toString()) as PaymentSuccessQueryString;
-    if (paymentMethodType === 'VIRTUAL_ACCOUNT') {
-      issueAccountMutate({ ...param, serviceId: 'DEMO' });
-    } else {
-      approveMutate({ ...param, serviceId: 'DEMO' });
-    }
-
-  }, [searchParam, issueAccountMutate, approveMutate]);
-
-  const isLoading = isApproveLoading || isIssueAccountLoading;
-  const isError = isApproveError || isIssueAccountError;
-  const error = approveError || issueAccountError;
+    const { ...param } = queryString.parse(searchParam.toString()) as PaymentSuccessQueryString;
+    mutate(param);
+  }, [searchParam, mutate]);
 
   return (
     <>
@@ -65,12 +47,10 @@ export function Success(): React.ReactElement {
       { isError && error && (
         <div>
           <h2>
-            ERROR!!
-            { (error as AxiosError<ErrorResponse>).response?.data.message }
+            <div>결제 실패</div>
+            { errorData?.error.data }
           </h2>
-          <h3>
-            { (error as AxiosError<ErrorResponse>).response?.data.detailMessage }
-          </h3>
+          { errorData?.error.code === 'E500' && <Button type="primary" onClick={() => navigate(`../${orderId}/order`)}>주문서로 돌아가기</Button> }
         </div>
       ) }
     </>

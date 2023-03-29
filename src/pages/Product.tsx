@@ -8,7 +8,7 @@ import { SelectedOptionList } from '../components/SelectedOptionList';
 import {
   PostCreatedOrderSheetSelectedOptionParam,
   PostCreateOrderSheetParam,
-} from '../types/api2';
+} from '../types/api';
 import { useNavigate } from 'react-router-dom';
 
 export function Product(): React.ReactElement {
@@ -18,7 +18,7 @@ export function Product(): React.ReactElement {
   const productId = 1;
 
   const { data, isLoading } = useQuery(
-    [],
+    ['product'],
     () => getProduct({ productId })
   );
 
@@ -39,31 +39,31 @@ export function Product(): React.ReactElement {
     return (<h3>잠시만 기다려주세요...</h3>);
   }
   const handleSelectOption = (selectedOptionId : number) : void => {
-    const productOptions = form.getFieldValue('productOptions') ?? [];
-    const flag = productOptions.find((option : PostCreatedOrderSheetSelectedOptionParam) =>
+    const productOptionList = form.getFieldValue('productOptionList') ?? [];
+    const flag = productOptionList.find((option : PostCreatedOrderSheetSelectedOptionParam) =>
       option.optionId === selectedOptionId) != null;
 
     if (flag) {
-      productOptions.forEach((option : PostCreatedOrderSheetSelectedOptionParam) => {
+      productOptionList.forEach((option : PostCreatedOrderSheetSelectedOptionParam) => {
         if (option.optionId === selectedOptionId) {
           option.count = option.count + 1;
         }
       });
     } else {
-      productOptions.push({
+      productOptionList.push({
         optionId: selectedOptionId,
         count: 1,
       });
     }
 
     form.setFieldsValue({
-      productOptions: productOptions,
+      productOptionList: productOptionList,
     });
   };
   const submit = (formData: ProductForm): void => {
     const param: PostCreateOrderSheetParam = {
       productId: formData.productId,
-      productOptions: formData.productOptions,
+      productOptionList: formData.productOptionList,
     };
     mutate(param);
   };
