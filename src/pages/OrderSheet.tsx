@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { PostRequestPaymentParam } from 'types/api2';
+import { PostRequestPaymentParam } from 'types/api';
 import { usePaymentBridge } from '@bucketplace/payment-bridge-react';
 import { useMutation, useQuery } from 'react-query';
 import { Form, Button, Card, Input } from 'antd';
@@ -19,7 +19,7 @@ import styled from '@emotion/styled';
 
 const MOCK_REQUEST_BODY: PostRequestPaymentParam = {
   orderId: '',
-  paymentMethodType: 'CARD',
+  paymentMethod: 'CARD',
   paymentPgId: '',
   orderAmount: 100000,
   paymentAmount: 100000,
@@ -81,6 +81,10 @@ export function OrderSheet(): React.ReactElement {
         }
         doPaymentProcess(paymentAuthUrl);
       },
+      onError: ({ response }) => {
+        const error = response.data.error;
+        alert(error.message);
+      },
     }
   );
 
@@ -113,13 +117,9 @@ export function OrderSheet(): React.ReactElement {
     const param = {
       ...MOCK_REQUEST_BODY,
       ...restForm,
-      // orderAmount: data.data.data.orderAmount + data.data.data.deliveryFee,
-      // paymentAmount: data.data.data.orderAmount + data.data.data.deliveryFee,
       successRedirectUrl: `${window.location.origin}/${formData.orderId}/result`,
       failRedirectUrl: `${window.location.origin}/${formData.orderId}/result/fail`,
     };
-
-    console.log(param);
 
     mutate(param);
   };
@@ -143,7 +143,7 @@ export function OrderSheet(): React.ReactElement {
         layout="horizontal"
         initialValues={{
           userChannelType: 'OHOUSE_GUEST',
-          paymentMethodType: 'CARD',
+          paymentMethod: 'CARD',
         }}
         size="middle"
         validateTrigger={['onSubmit']}
@@ -195,16 +195,16 @@ export function OrderSheet(): React.ReactElement {
           <Form.Item rules={[{ required: true }]} label="수령인 전화번호" name="recipientPhone" initialValue={orderSheet.delivery ? orderSheet.delivery.recipientPhone : ''}>
             <Input />
           </Form.Item>
-          <Form.Item rules={[{ required: true }]} label="배송지 주소 1" name="address" initialValue={orderSheet.delivery ? orderSheet.delivery.address : ''}>
+          <Form.Item rules={[{ required: true }]} label="배송지 주소" name="address" initialValue={orderSheet.delivery ? orderSheet.delivery.address : ''}>
             <Input />
           </Form.Item>
-          <Form.Item rules={[{ required: true }]} label="배송지 주소 2" name="extraAddress" initialValue={orderSheet.delivery ? orderSheet.delivery.extraAddress : ''}>
+          <Form.Item rules={[{ required: true }]} label="배송지 상세 주소" name="extraAddress" initialValue={orderSheet.delivery ? orderSheet.delivery.extraAddress : ''}>
             <Input />
           </Form.Item>
           <Form.Item rules={[{ required: true }]} label="배송지 우편 번호" name="postCode" initialValue={orderSheet.delivery ? orderSheet.delivery.postCode : ''}>
             <Input />
           </Form.Item>
-          <Form.Item rules={[{ required: true }]} label="배송 요청 사항" name="deliveryRequest" initialValue={orderSheet.delivery ? orderSheet.delivery.deliveryRequest : ''}>
+          <Form.Item label="배송 요청 사항" name="deliveryRequest" initialValue={orderSheet.delivery ? orderSheet.delivery.deliveryRequest : ''}>
             <Input />
           </Form.Item>
         </OrderSheetItemGroup>

@@ -6,21 +6,17 @@ import { AxiosError } from 'axios';
 import { ErrorResponse, PaymentMethodType } from 'types/api';
 
 import { approvePayment } from '../api/order';
-import { PostPaymentApprovalParam } from '../types/api2';
+import { PostPaymentApprovalParam } from '../types/api';
 import { Button } from 'antd';
 
 type PaymentSuccessQueryString = Omit<PostPaymentApprovalParam, 'serviceId'> & {
-  paymentMethodType?: PaymentMethodType,
+  paymentMethod?: PaymentMethodType,
 };
 
 export function Success(): React.ReactElement {
   const { orderId } = useParams<{ orderId: string }>() as { orderId: string };
   const [searchParam] = useSearchParams();
   const navigate = useNavigate();
-
-  const goOrderSheet = (): void => {
-    navigate(`../${orderId}/order`);
-  };
 
   const {
     mutate,
@@ -52,9 +48,9 @@ export function Success(): React.ReactElement {
         <div>
           <h2>
             <div>결제 실패</div>
-            { errorData?.error.message }
+            { errorData?.error.data }
           </h2>
-          { errorData?.error.code === 'E500' && <Button type="primary" onClick={goOrderSheet}>주문서로 돌아가기</Button> }
+          { errorData?.error.code === 'E500' && <Button type="primary" onClick={() => navigate(`../${orderId}/order`)}>주문서로 돌아가기</Button> }
         </div>
       ) }
     </>

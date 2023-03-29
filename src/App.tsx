@@ -8,12 +8,14 @@ import './App.css';
 import { Fail } from './pages/Fail';
 import { OrderDetail } from './pages/OrderDetail';
 import { Cancel } from './pages/Cancel';
+import { OrderList } from './pages/OrderList';
 
 function App(): React.ReactElement {
   return (
     <div className="App">
       <Routes>
         <Route index element={<Product />} />
+        <Route path="/order/list" element={<OrderList />} />
         <Route path=":orderId/order" element={<OrderSheet />} />
         <Route path=":orderId/result" element={<Success />} />
         <Route path=":orderId/result/success" element={<SuccessResult />} />

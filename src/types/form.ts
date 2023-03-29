@@ -1,9 +1,9 @@
-import { PostCancelOrderParam, PostCreateOrderSheetParam, PostRequestPaymentParam } from 'types/api2';
+import { PostCancelOrderParam, PostCreateOrderSheetParam, PostRequestPaymentParam } from 'types/api';
 
 export type PaymentForm = Pick<
 PostRequestPaymentParam,
 | 'orderId'
-| 'paymentMethodType'
+| 'paymentMethod'
 | 'paymentPgId'
 | 'cardCode'
 | 'installmentMonth'
@@ -12,7 +12,7 @@ PostRequestPaymentParam,
 export type ProductForm = Pick<
 PostCreateOrderSheetParam,
 | 'productId'
-| 'productOptions'
+| 'productOptionList'
 >;
 
 export type CancelOrderForm = Pick<

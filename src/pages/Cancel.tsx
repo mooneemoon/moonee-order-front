@@ -5,7 +5,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { CancelOrderForm } from '../types/form';
 import { useMutation } from 'react-query';
 import { cancelOrder } from '../api/order';
-import { PostCancelOrderParam } from '../types/api2';
+import { PostCancelOrderParam } from '../types/api';
 
 export function Cancel(): React.ReactElement {
   const { orderId, orderProductOptionId } = useParams<{

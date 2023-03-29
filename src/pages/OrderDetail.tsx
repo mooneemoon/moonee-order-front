@@ -3,14 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { getOrderDetail } from '../api/order';
 import styled from '@emotion/styled';
-import { Select } from 'antd';
+import { Button, Select } from 'antd';
 
-const stateList = ['주문 완료', '주문 취소'];
+const filterType = ['주문완료', '주문취소'];
 export function OrderDetail(): React.ReactElement {
   const { orderId } = useParams<{ orderId: string }>() as { orderId: string };
-  const [selectedFilterKey, setSelectedFilterKey] = useState<string|null>(
-    null
-  );
+  const [filter, setFilter] = useState<string|null>(null);
   const navigate = useNavigate();
 
   const { data, isLoading } = useQuery(
@@ -26,15 +24,12 @@ export function OrderDetail(): React.ReactElement {
 
   const order = data.data.data;
 
-  const filter = (filterKey: string):void => {
-    console.log(filterKey);
-    setSelectedFilterKey(filterKey);
+  const changeFilter = (filterKey: string):void => {
+    setFilter(filterKey);
   };
-  const cancel = ():void => {
-    navigate(`../${orderId}/cancel`);
-  };
-  const cancelOption = (orderProductOptionId: number):void => {
-    navigate(`../${orderId}/${orderProductOptionId}/cancel`);
+
+  const resetFilter = ():void => {
+    setFilter(null);
   };
 
   return (
@@ -42,31 +37,41 @@ export function OrderDetail(): React.ReactElement {
       <div>주문 상세 정보</div>
       <div>{ `주문번호 :  ${order.orderId}` }</div>
       <div>{ `주문일자 :  ${order.orderedAt}` }</div>
-      <div>
-        <CancelButton onClick={cancel}>전체 취소</CancelButton>
-        <Select onChange={filter} placeholder="필터">
+      <TopAreaGroup>
+        <Button onClick={() => navigate('../order/list')}>주문 내역</Button>
+        <CancelButton onClick={() => navigate(`../${orderId}/cancel`)}>전체 취소</CancelButton>
+        <Select
+          onChange={changeFilter}
+          placeholder="필터"
+          value={filter}
+        >
           {
-            stateList.map(state => {
-              return <Select.Option key={state} text={state}>주문 완료</Select.Option>;
+            filterType.map(filter => {
+              return (
+                <Select.Option key={filter} text={filter}>
+                  { filter }
+                </Select.Option>
+              );
             })
           }
         </Select>
-      </div>
+        <Button onClick={resetFilter}>필터 제거</Button>
+      </TopAreaGroup>
       <OrderItemGroup>
         <div>주문 상품</div>
-        { order.orderProductList.map(product => {
+        { order.orderProductList && order.orderProductList.map(product => {
           return (
             <ProductGroup>
               <div>{ `${product.productName}  |  배송비 : ${product.deliveryCost}원 ` }</div>
               <div>
                 {
                   product.orderProductOptionList.map(option => {
-                    return ((selectedFilterKey == null || selectedFilterKey === option.state) && (
+                    return ((filter == null || filter === option.state) && (
                       <ProductOptionGroup>
                         <div>{ option.optionName }</div>
                         <div>{ `${option.cost * option.count}원   |   ${option.count}개` }</div>
                         <div>{ option.state }</div>
-                        { option.state === '주문 완료' && <CancelButton onClick={() => cancelOption(option.orderProductOptionId)}>취소</CancelButton> }
+                        { option.state === '주문 완료' && <CancelButton onClick={() => navigate(`../${orderId}/${option.orderProductOptionId}/cancel`)}>취소</CancelButton> }
                       </ProductOptionGroup>
                     )
                     );
@@ -104,6 +109,13 @@ export function OrderDetail(): React.ReactElement {
   );
 }
 
+const TopAreaGroup = styled.div`
+  width: 500px;
+  & > div {
+    width:30%
+  }
+`;
+
 const ProductGroup = styled.div`
   width: 500px;
   color: gray;
@@ -126,6 +138,8 @@ const CancelButton = styled.div`
   width: 70px;
   border: thin solid gray;
   text-align: center;
+  background-color: antiquewhite;
+  height:30px;
 `;
 
 const OrderItemGroup = styled.div`

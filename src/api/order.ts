@@ -11,8 +11,13 @@ import {
   PostRequestPaymentParam,
   PostRequestPaymentResponse,
   PostPaymentApprovalParam,
-  PaymentApprovalResponse, GetOrderDetailParam, GetOrderDetailResponse, PostCancelOrderParam, PostCancelOrderResponse,
-} from '../types/api2';
+  PaymentApprovalResponse,
+  GetOrderDetailParam,
+  GetOrderDetailResponse,
+  PostCancelOrderParam,
+  PostCancelOrderResponse,
+  GetOrderListParam, GetOrderListResponse,
+} from '../types/api';
 
 export function getProduct({
   productId,
@@ -52,6 +57,21 @@ export function approvePayment(
   return orderClient.post<PaymentApprovalResponse>(
     `/orders/${param.orderId}`,
     param
+  );
+}
+
+export function getOrderList({
+  filter, page, size,
+} : GetOrderListParam): AxiosPromise<GetOrderListResponse> {
+  return orderClient.get<GetOrderListResponse>(
+    '/orders',
+    {
+      params: {
+        filter: filter,
+        page: page,
+        size: size,
+      },
+    }
   );
 }
 

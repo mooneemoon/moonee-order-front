@@ -1,5 +1,5 @@
 import React from 'react';
-// import { PaymentApprovalResponse } from '../types/api2';
+// import { PaymentApprovalResponse } from '../types/api';
 // import * as querystring from 'query-string';
 // import styled from '@emotion/styled';
 
