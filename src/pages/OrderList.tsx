@@ -13,38 +13,37 @@ export interface Filter {
 const filterType: Filter[] = [
   { name: 'ORDER_COMPLETE', description: '주문완료' },
   { name: 'ORDER_CANCEL', description: '주문취소' },
-  { name: 'ORDER_PARTIAL_CANCEL', description: '부분취소' },
 ];
 export function OrderList(): React.ReactElement {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<string|null>(null);
-  const [page, setPage] = useState<number|null>(0);
-  const [size] = useState<number|null>(5);
+  const [lastId, setLastId] = useState<number|null>(null);
+  const [size] = useState<number>(4);
   const [orderList, setOrderList] = useState<GetOrderListOrderResponse[]>([]);
   const [moreList, setMoreList] = useState<boolean>(true);
   const loadMore = ():void => {
-    loadMoreMutate({ filter: filter, page: page, size: size });
+    loadMoreMutate({ orderProductOptionState: filter, lastId: lastId, size: size });
   };
 
   const changeFilter = (key: string):void => {
     setFilter(key);
-    changeFilterMutate({ filter: key, page: 0, size: size });
+    changeFilterMutate({ orderProductOptionState: key, lastId: null, size: size });
   };
 
   const resetFilter = ():void => {
     setFilter(null);
-    changeFilterMutate({ filter: null, page: 0, size: size });
+    changeFilterMutate({ orderProductOptionState: null, lastId: null, size: size });
   };
 
   const { mutate: loadMoreMutate } = useMutation(
     getOrderList,
     {
       onSuccess: (data) => {
-        setOrderList(orderList.concat(data.data.data));
-        setPage((page ? page + 1 : 1));
-        setMoreList(data.data.data.length === size);
+        setOrderList(orderList.concat(data.data.data.list));
+        setLastId(data.data.data.lastId);
+        setMoreList(data.data.data.moreList);
 
-        console.log(filter + ' ' + page + ' ' + size);
+        console.log(filter + ' ' + data.data.data.lastId + ' ' + size);
       },
       onError: () => {
         alert('조회에 실패하였습니다');
@@ -56,11 +55,11 @@ export function OrderList(): React.ReactElement {
     getOrderList,
     {
       onSuccess: (data) => {
-        setOrderList(data.data.data);
-        setPage(1);
-        setMoreList(data.data.data.length === size);
+        setOrderList(data.data.data.list);
+        setLastId(data.data.data.lastId);
+        setMoreList(data.data.data.moreList);
 
-        console.log(filter + ' ' + page + ' ' + size);
+        console.log(filter + ' ' + lastId + ' ' + size);
       },
       onError: () => {
         alert('조회에 실패하였습니다');
@@ -71,15 +70,15 @@ export function OrderList(): React.ReactElement {
   const { data, isLoading } = useQuery(
     ['order/list'],
     () => getOrderList({
-      filter: filter,
-      page: page,
+      orderProductOptionState: filter,
+      lastId: lastId,
       size: size,
     }),
     {
       onSuccess: (data) => {
-        setOrderList(data.data.data);
-        setPage((page ? page + 1 : 1));
-        setMoreList(data.data.data.length === size);
+        setOrderList(data.data.data.list);
+        setLastId(data.data.data.lastId);
+        setMoreList(data.data.data.moreList);
       },
     }
   );
@@ -115,14 +114,15 @@ export function OrderList(): React.ReactElement {
             <OrderGroup onClick={() => navigate(`../${order.orderId}/detail`)}>
               <div>{ `주문번호 : ${order.orderId} | ${order.orderedAt}` }</div>
               <Button type="primary">상세 보기</Button>
-              { order.orderProductList.map(product => {
+              { order.productList.map(product => {
                 return (
                   <ProductGroup>
                     <div>{ `${product.productName}  |  배송비 : ${product.deliveryCost}원 ` }</div>
                     {
-                      product.orderProductOptionList.map(option => {
+                      product.optionList.map(option => {
                         return (
                           <ProductOptionGroup>
+                            <div>{ option.orderProductOptionId }</div>
                             <div>{ option.optionName }</div>
                             <div>{ `${option.cost * option.count}원   |   ${option.count}개` }</div>
                             <div>{ option.state }</div>

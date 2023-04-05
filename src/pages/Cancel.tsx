@@ -20,6 +20,11 @@ export function Cancel(): React.ReactElement {
       onSuccess: (data) => {
         navigate(`../${orderId}/detail`);
       },
+      onError: ({ response }) => {
+        const error = response.data.error;
+        alert(error.data);
+        navigate(`../${orderId}/detail`);
+      },
     }
   );
 

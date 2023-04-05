@@ -194,36 +194,27 @@ export interface PaymentApprovalResponse {
 }
 
 export interface GetOrderListParam {
-  filter: string | null;
-  page: number | null;
+  orderProductOptionState: string | null;
+  lastId: number | null;
   size: number | null;
 }
 
 export interface GetOrderListResponse {
-  data: GetOrderListOrderResponse[];
+  data: GetOrderListResult;
   result: string;
   error: string | null;
 }
 
+export interface GetOrderListResult {
+  list: GetOrderListOrderResponse[];
+  lastId: number;
+  moreList: boolean;
+}
+
 export interface GetOrderListOrderResponse {
   orderId: number;
-  userId: number;
-  productCost: number;
-  deliveryCost: number;
-  paymentCost: number;
-  point: number;
-  promotionCost: number;
-  paymentId: string;
-  userName: string;
-  userPhone: string;
-  userEmail: string;
-  deliveryAddress: string;
-  deliveryExtraAddress: string;
-  deliveryPostCode: string;
-  deliveryRequest: string | null;
-  state: string;
-  orderProductList: GetOrderListOrderProductResponse[];
   orderedAt: string;
+  productList: GetOrderListOrderProductResponse[];
 }
 
 export interface GetOrderListOrderProductResponse {
@@ -231,7 +222,7 @@ export interface GetOrderListOrderProductResponse {
   productId: number;
   productName: string;
   deliveryCost: number;
-  orderProductOptionList: GetOrderListOrderProductOptionResponse[];
+  optionList: GetOrderListOrderProductOptionResponse[];
 }
 
 export interface GetOrderListOrderProductOptionResponse {
@@ -272,7 +263,7 @@ export interface GetOrderResponse {
   cardCode: string | null;
   installmentMonth: number | null;
   approvalAt: Date;
-  orderProductList: GetOrderProductResponse[];
+  productList: GetOrderProductResponse[];
   state: string;
   orderedAt: Date;
 }
@@ -281,8 +272,8 @@ export interface GetOrderProductResponse {
   orderProductId: number;
   productId: number;
   productName: string;
-  deliveryCost: number;
-  orderProductOptionList: GetOrderProductOptionResponse[];
+  deliveryFee: number;
+  optionList: GetOrderProductOptionResponse[];
 }
 
 export interface GetOrderProductOptionResponse {

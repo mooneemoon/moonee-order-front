@@ -61,14 +61,14 @@ export function approvePayment(
 }
 
 export function getOrderList({
-  filter, page, size,
+  orderProductOptionState, lastId, size,
 } : GetOrderListParam): AxiosPromise<GetOrderListResponse> {
   return orderClient.get<GetOrderListResponse>(
     '/orders',
     {
       params: {
-        filter: filter,
-        page: page,
+        orderProductOptionState: orderProductOptionState,
+        lastId: lastId,
         size: size,
       },
     }
@@ -87,6 +87,5 @@ export function cancelOrder(
   const url = param.orderProductOptionId ?
     `/orders/${param.orderId}/${param.orderProductOptionId}/cancel`
     : `/orders/${param.orderId}/cancel`;
-  console.log(url);
   return orderClient.post<PostCancelOrderResponse>(url, param);
 }

@@ -39,7 +39,7 @@ export function OrderDetail(): React.ReactElement {
       <div>{ `주문일자 :  ${order.orderedAt}` }</div>
       <TopAreaGroup>
         <Button onClick={() => navigate('../order/list')}>주문 내역</Button>
-        <CancelButton onClick={() => navigate(`../${orderId}/cancel`)}>전체 취소</CancelButton>
+        { order.state === '주문 완료' && <CancelButton onClick={() => navigate(`../${orderId}/cancel`)}>전체 취소</CancelButton> }
         <Select
           onChange={changeFilter}
           placeholder="필터"
@@ -59,13 +59,13 @@ export function OrderDetail(): React.ReactElement {
       </TopAreaGroup>
       <OrderItemGroup>
         <div>주문 상품</div>
-        { order.orderProductList && order.orderProductList.map(product => {
+        { order.productList && order.productList.map(product => {
           return (
             <ProductGroup>
-              <div>{ `${product.productName}  |  배송비 : ${product.deliveryCost}원 ` }</div>
+              <div>{ `${product.productName}  |  배송비 : ${product.deliveryFee}원 ` }</div>
               <div>
                 {
-                  product.orderProductOptionList.map(option => {
+                  product.optionList.map(option => {
                     return ((filter == null || filter === option.state) && (
                       <ProductOptionGroup>
                         <div>{ option.optionName }</div>
